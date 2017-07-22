@@ -12,8 +12,21 @@ import StoreKit
 import Alamofire
 
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, PlayerViewDelegate, UISearchControllerDelegate {
 
+    enum RestorationKeys : String {
+        case viewControllerTitle
+        case searchControllerIsActive
+        case searchBarText
+        case searchBarIsFirstResponder
+    }
+    
+    struct SearchControllerRestorableState {
+        var wasActive = false
+        var wasFirstResponder = false
+    }
+    
+    
     @IBOutlet weak var songTableView:UITableView!
     @IBOutlet weak var miniPlayer:PlayerView!
    
@@ -27,19 +40,44 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     var selected:Bool = false
     var selectedIndex:IndexPath?
     
-       
+    /// Search controller to help us with filtering.
+    var searchController: UISearchController!
+    
+    /// Secondary search results table view.
+    var resultsTableController: ResultsTableViewController!
 
+    /// Restoration state for UISearchController
+    var restoredState = SearchControllerRestorableState()
+    var arraySongs: Array<Music> = []
+    var searchResultArraySongs: Array<Music> = []
+    var filteredList:[Music]! = []
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+       
+        self.searchController = UISearchController(searchResultsController: nil)
+        self.searchController.searchResultsUpdater = self
+        self.searchController.searchBar.sizeToFit()
+        self.songTableView.tableHeaderView = searchController.searchBar
+        self.searchController.delegate = self
+        self.searchController.dimsBackgroundDuringPresentation = false
+        self.searchController.searchBar.delegate = self
+        definesPresentationContext = true
      
         self.PrepOperation()
 
         
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+    }
+
+    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -51,12 +89,15 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     //sections
     func numberOfSections(in tableView: UITableView) -> Int {
-        let section:Int =  self.songsTableView.GetSection()
-        return section
+        return 1
     }
     
     //rows
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if searchController.isActive && searchController.searchBar.text != "" {
+            return filteredList.count
+        }
+        
         let rows:Int =  self.songsTableView.GetRows()
             print(rows)
         return rows
@@ -71,13 +112,33 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             self.Overlay(start: false)
         }
         
+       
+        
+        
+        let cell:UITableViewCell!
         self.selected = false
         if self.selectedIndex?.row == indexPath.row{
             self.selected = true
+          
+           
         }
         
         
-        let cell:UITableViewCell = self.songsTableView.GetTableViewCell(index: indexPath, tableView: tableView, selectedSong: self.selected)
+        if self.searchController.isActive && self.searchController.searchBar.text != ""{
+        
+            
+            cell = self.songsTableView.GetTableViewCell(index: indexPath, tableView: tableView, selectedSong: self.selected, filteredResults: self.filteredList)
+             self.selectedIndex = nil
+            
+        }
+        else
+        {
+           
+            
+
+            cell = self.songsTableView.GetTableViewCell(index: indexPath, tableView: tableView, selectedSong: self.selected)
+        }
+        
        
         return cell
     }
@@ -95,11 +156,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         ///Music Player
-        //let theMusic = self.songsTableView.GetSong(index: indexPath)
-        self.miniPlayer.alpha = 1.0
-        self.miniPlayer.setPlayer(index: indexPath, playList: self.songsTableView.thePlayList!)
-   //   self.miniPlayer.timeSlider.value = 0.0
-    //    self.miniPlayer.timeSlider.maximumValue = Float(theMusic.durationInMilis)
+         self.miniPlayer.alpha = 1.0
+        if self.searchController.isActive && self.searchController.searchBar.text != ""{
+            self.miniPlayer.SetPlayerResult(index: indexPath, filtered: self.filteredList)
+        }
+        else
+        {
+            
+            self.miniPlayer.SetPlayer(index: indexPath, playList: self.songsTableView.thePlayList!)
+        }
+       
+        
        
         if let songIndex = self.selectedIndex{
             self.selectedIndex = indexPath
@@ -137,12 +204,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         
         DispatchQueue.main.async {
-            self.viewOverlay =  self.songsTableView.AddOverLay(view: self.view)
-            self.view.addSubview(self.viewOverlay)
-            self.view.bringSubview(toFront: self.viewOverlay)
-            self.Overlay(start: true)
+           //self.viewOverlay =  self.songsTableView.AddOverLay(view: self.view)
+           // self.view.addSubview(self.viewOverlay)
+            //self.view.bringSubview(toFront: self.viewOverlay)
+            //self.Overlay(start: true)
             self.miniPlayer.alpha = 0.0
             self.miniPlayer.SetupMiniPlayer()
+            self.miniPlayer.delegate = self
             
         }
         
@@ -189,7 +257,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         {
             UIView.animate(withDuration: 2.5, delay: 0.0, options: UIViewAnimationOptions(), animations: { () -> Void in
                 
-                self.viewOverlay!.alpha = 0.0
+             //   self.viewOverlay!.alpha = 0.0
                 
             }, completion: { (finished: Bool) -> Void in
                 
@@ -214,6 +282,53 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
     }
     
+    
+    //MARK:PlayerView Delegate
+    func UpdateTableView(index:IndexPath, oldIndex:IndexPath){
+        self.selectedIndex = index
+        self.songTableView.reloadRows(at: [oldIndex,index], with: .fade)
+        
+    }
+    
+    
+    
+    //MARK: Filtered Content
+    func filterContentForSearchText(_ searchText: String) {
+        let musicList:[Music] = (self.songsTableView.thePlayList?.GetMusicList())!
+        self.filteredList =  musicList.filter {  item in
+            return  item.trackName.lowercased().contains(searchText.lowercased()) || (item.artist?.lowercased().contains(searchText.lowercased()))!
+        }
+        
+        
+        self.songTableView.reloadData()
+    }
 
+
+}
+
+
+extension ViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+       
+        filterContentForSearchText(searchController.searchBar.text!)
+    }
+    
+    
+}
+
+//MARK: SearchBarDelegate
+extension ViewController: UISearchBarDelegate{
+    
+    func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
+        
+        filterContentForSearchText(searchBar.text!)
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        
+        searchBar.text = nil
+        searchBar.resignFirstResponder()
+        
+    }
 }
 

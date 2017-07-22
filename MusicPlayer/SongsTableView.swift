@@ -108,7 +108,23 @@ class SongsTableView: NSObject {
         return cell
 
     }
-    
+    //MARK:Set TableView Cell Search Results
+    func GetTableViewCell(index:IndexPath, tableView:UITableView, selectedSong:Bool, filteredResults:[Music])->UITableViewCell{
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "SongCell", for: index) as! SongsTableCell
+        let musicData =  filteredResults[index.row]
+        cell.setMusicData(theMusic: musicData)
+        cell.SetLabel()
+        
+        cell.songImgButton.isHidden = true
+        if selectedSong{
+            cell.songImgButton.isHidden = false
+        }
+        
+        
+        return cell
+        
+    }
     
     
     

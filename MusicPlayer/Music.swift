@@ -59,13 +59,19 @@ struct Music{
 struct  PlayList {
     
     var songList:NSArray?
+   private var musicList:[Music]?
     
     init( list:[Music] ) {
         self.songList = NSArray(array: list)
+        self.musicList = list
     }
     
     init() {
         
+    }
+    
+    func GetMusicList()->[Music]{
+     return self.musicList!
     }
     
 }
