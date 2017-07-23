@@ -54,11 +54,7 @@ class SongsTableCell: UITableViewCell {
             self.artistTrack.text = songTitle
         }
         self.songImgButton.isHidden = true
-        
-       
-        
-       
-        
+         
     }
     
     

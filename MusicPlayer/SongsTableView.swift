@@ -109,7 +109,6 @@ class SongsTableView: NSObject {
             cell.songImgButton.isHidden = false
         }
         
-        
         return cell
 
     }
@@ -190,6 +189,7 @@ class SongsTableView: NSObject {
     }
     
     //MARK: Adding new rows methods
+    // First load 25 items then next 5 items
     func SubArray() -> [Music]{
         var tempArray:[Music]?
         var tempTotal = 0
@@ -228,15 +228,12 @@ class SongsTableView: NSObject {
         }
        
         self.thePlayList?.arrayList?.addObjects(from: ListOfSongs)
-        
-        
     }
     
     
-    func ProcessArray()->[Music]{
+    func ProcessList()->[Music]{
         let myList = SubArray()
         AddNewItems(ListOfSongs: myList)
-        
         return myList
     }
 

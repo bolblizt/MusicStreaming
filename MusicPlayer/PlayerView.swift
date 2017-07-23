@@ -43,18 +43,13 @@ class PlayerView: UIView {
     //MARK: Setup MiniPlayer
     
     func SetupMiniPlayer(){
-        
-     
+
         self.timeSlider?.addTarget(self, action: #selector(PlayerView.playbackSliderValueChanged(_:)), for: .valueChanged)
-        
     }
     
     //MARK: objects used to play audio files
     func SetPlayer(index:IndexPath, playList:PlayList){
-        
-        
-        
-       
+
         let selectedMusic =  playList.musicList?[index.row]
         var url:URL?
         
@@ -86,8 +81,6 @@ class PlayerView: UIView {
             self.playButtonTapped()
             self.player?.play()
             self.iscurrentlyPlaying = true
-            // self.playButtonTapped()
-            
             
             let duration : CMTime = playerItem.asset.duration
             let seconds : Float64 = CMTimeGetSeconds(duration)
@@ -124,9 +117,6 @@ class PlayerView: UIView {
                 
             }
         }
-
-        
-       
     }
     
     
@@ -280,8 +270,7 @@ class PlayerView: UIView {
         if(index.row < (playList.musicList?.count)! - 1){
             let nextSong = index.row + 1
             let nextSongIndex = IndexPath(row: nextSong, section: 0)
-            
-            
+
             player!.pause()
             player = nil
             self.SetPlayer(index: nextSongIndex, playList: playList)

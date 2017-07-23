@@ -260,7 +260,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func setTheTable(){
         
         self.songsTableView.SetPlayList(songList:self.musicDownLoad.GetPlayList())
-    _ = self.songsTableView.ProcessArray()
+    _ = self.songsTableView.ProcessList()
         self.trackListTable?.delegate = self
         self.trackListTable?.dataSource = self
         DispatchQueue.main.async {
@@ -370,12 +370,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //MARK: Orientation Changes
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         if UIDevice.current.orientation.isLandscape {
-           // print("Landscape")
-            
             self.trackListTable.tableHeaderView?.isHidden = true
             self.isLandscape = true
             self.trackSearchBar.isHidden = false
             self.miniPlayer.alpha = 1.0
+            
         } else {
             
             self.trackListTable.tableHeaderView?.isHidden = false
@@ -385,7 +384,6 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             if self.isPlaying{
                 self.miniPlayer.alpha = 1.0
             }
-           // print("Portrait")
         }
     }
     
@@ -399,7 +397,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-         let newList =  self.songsTableView?.ProcessArray()
+         let newList =  self.songsTableView?.ProcessList()
          AddNewRows(tableView: self.trackListTable!, theList: newList!)
         
     }
@@ -442,8 +440,7 @@ extension ViewController: UISearchBarDelegate{
   
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         searchBar.showsCancelButton = true
-       
-       
+ 
     }
     
     func searchBar(_ searchBar: UISearchBar, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
