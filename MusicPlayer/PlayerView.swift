@@ -28,6 +28,7 @@ class PlayerView: UIView {
     var playerItem:AVPlayerItem?
     var playerLayer:AVPlayerLayer?
     var iscurrentlyPlaying:Bool = false
+    var currentRow:Int = 0
 
     /*
     // Only override draw() if you perform custom drawing.
@@ -75,9 +76,9 @@ class PlayerView: UIView {
             
             
             let playerItem:AVPlayerItem = AVPlayerItem(url: url!)
+            self.currentRow = index.row
+            playerItem.addObserver(self, forKeyPath: "status", options: .new, context: nil)
             self.player = AVPlayer(playerItem: playerItem)
-            
-            
             self.playerLayer=AVPlayerLayer(player: player!)
             self.playerLayer?.frame=CGRect(x: 0, y: 0, width: 10, height: 50)
             self.layer.addSublayer(self.playerLayer!)
@@ -128,6 +129,7 @@ class PlayerView: UIView {
        
     }
     
+    
  //MARK: Player for search items only
     func SetPlayerResult(index:IndexPath, filtered:[Music]){
         
@@ -141,9 +143,8 @@ class PlayerView: UIView {
         let selectedMusic = filtered[index.row]
         let url = URL(string: (selectedMusic.previewSongURL))
         let playerItem:AVPlayerItem = AVPlayerItem(url: url!)
+        playerItem.addObserver(self, forKeyPath: "status", options: .new, context: nil)
         self.player = AVPlayer(playerItem: playerItem)
-        
-        
         self.playerLayer=AVPlayerLayer(player: player!)
         self.playerLayer?.frame=CGRect(x: 0, y: 0, width: 10, height: 50)
         self.layer.addSublayer(self.playerLayer!)
@@ -182,6 +183,38 @@ class PlayerView: UIView {
             }
             
         }
+    }
+    
+    
+    //MARK: AVPlayer Interrupted
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if  keyPath == "status"  {
+            if self.player?.currentItem?.status == .failed{
+                
+                self.MakeChangesOnPlayerState()
+                self.currentTrack = nil
+                 let userDict:[String:Int] = ["songRow":self.currentRow]
+                let nc = NotificationCenter.default
+                nc.post(name: Notification.Name(rawValue: "streamingError"), object: nil, userInfo: userDict)
+                
+            } else if self.player?.currentItem?.status == .readyToPlay {
+                
+                
+                
+            } else if self.player?.status == .unknown {
+                let nc = NotificationCenter.default
+                nc.post(name: Notification.Name(rawValue: "errorFetching"), object: nil)
+                
+            }
+        }
+    }
+
+    func MakeChangesOnPlayerState(){
+        DispatchQueue.main.async {
+            self.playPauseButton.setImage(UIImage(named:"PlayButton"), for: .normal)
+            self.player = nil
+        }
+       
     }
     
     //MARK: Slider value change

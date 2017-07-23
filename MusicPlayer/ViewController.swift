@@ -163,7 +163,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //MARK: - Get Music and Setup the UI
     func PrepOperation(){
         
-        self.musicDownLoad = MusicDownloader(urlString: "https://itunes.apple.com/search?term=beatles&entity=song&limit=50")
+        let iTunesURL = "https://itunes.apple.com/search?term=beatles&entity=song&limit=50"
+        self.musicDownLoad = MusicDownloader(urlString:iTunesURL )
         self.musicDownLoad.downloadMusic()
         self.songsTableView = SongsTableView()
         
@@ -183,7 +184,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         NotificationCenter.default.addObserver(self, selector: #selector(ViewController.setTheTable), name: NSNotification.Name(rawValue: "listOfSongs"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(ViewController.AlertMsg), name: NSNotification.Name(rawValue: "errorFetching"), object: nil)
-        
+
+        NotificationCenter.default.addObserver(self, selector: #selector(ViewController.ErrorAlert), name: NSNotification.Name(rawValue: "streamingError"), object:nil)
+
     }
     
     
@@ -297,17 +300,43 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //MARK: - Alert Messages
     func AlertMsg(){
         self.miniPlayer.alpha = 0.0
-        let alertView = UIAlertController(title: "Music Player", message: "Please check your internet connection", preferredStyle: .alert)
+        let alertView = UIAlertController(title: "Music Player", message: "Please check your internet connection. Thank you.", preferredStyle: .alert)
         
         let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) {
             (result : UIAlertAction) -> Void in
-            print("OK")
             self.Overlay(start: false)
         }
         alertView.addAction(okAction)
         self.present(alertView, animated: true, completion: nil)
         
     }
+    
+    func ErrorAlert(notification:Notification){
+        
+        
+        if let myDict = (notification as NSNotification).userInfo  {
+           
+            let row = myDict["songRow"] as! Int
+            self.selectedIndex = nil
+            self.isPlaying = false
+            let tempIndex = IndexPath(item: row, section: 0)
+            self.trackListTable.reloadRows(at: [tempIndex], with: .fade)
+        }
+       
+        
+        self.miniPlayer.alpha = 0.0
+        let alertView = UIAlertController(title: "Music Player", message: "Music Streaming interrupted, please check your data connection and  try again. Thank you.", preferredStyle: .alert)
+        
+        let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) {
+            (result : UIAlertAction) -> Void in
+           
+            self.Overlay(start: false)
+        }
+        alertView.addAction(okAction)
+        self.present(alertView, animated: true, completion: nil)
+        
+    }
+
     
     
     //MARK:PlayerView Delegate
