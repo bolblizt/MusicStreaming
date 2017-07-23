@@ -23,6 +23,7 @@ struct Music{
     
     
     
+    
     init(Init trackName:String, artistName:String, albumName:String, durationMilis:CLongLong, previewSongURL:String, albumArt:String){
         
         self.trackName = trackName
@@ -32,6 +33,7 @@ struct Music{
         self.durationInMilis = durationMilis
         self.previewSongURL = previewSongURL
         self.albumArtURL = albumArt
+     
         
     }
     

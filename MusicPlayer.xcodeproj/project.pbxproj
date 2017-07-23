@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0C39A7DB1F203DAE00D1015E /* SongsTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C39A7DA1F203DAE00D1015E /* SongsTableCell.swift */; };
+		0CEF3D881F2388DF00D6C236 /* SidePlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CEF3D871F2388DF00D6C236 /* SidePlayerView.swift */; };
 		0CF0FEF61F18420D00539601 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0CF0FEF51F18420D00539601 /* AVFoundation.framework */; };
 		0CF1A51D1F0735F700C842C9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CF1A51C1F0735F700C842C9 /* AppDelegate.swift */; };
 		0CF1A51F1F0735F700C842C9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CF1A51E1F0735F700C842C9 /* ViewController.swift */; };
@@ -41,6 +42,7 @@
 
 /* Begin PBXFileReference section */
 		0C39A7DA1F203DAE00D1015E /* SongsTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SongsTableCell.swift; sourceTree = "<group>"; };
+		0CEF3D871F2388DF00D6C236 /* SidePlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SidePlayerView.swift; sourceTree = "<group>"; };
 		0CF0FEF51F18420D00539601 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		0CF1A5191F0735F700C842C9 /* MusicPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MusicPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0CF1A51C1F0735F700C842C9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -120,6 +122,7 @@
 				0CF1BF2F1F1ECF3D00D31E17 /* SongsTableView.swift */,
 				0C39A7DA1F203DAE00D1015E /* SongsTableCell.swift */,
 				0CF1BF2D1F1E4EB100D31E17 /* PlayerView.swift */,
+				0CEF3D871F2388DF00D6C236 /* SidePlayerView.swift */,
 				0CF1A54A1F07363A00C842C9 /* Music.swift */,
 				0CF1A5201F0735F700C842C9 /* Main.storyboard */,
 				0CF1A5231F0735F700C842C9 /* Assets.xcassets */,
@@ -359,6 +362,7 @@
 				0CF1A51D1F0735F700C842C9 /* AppDelegate.swift in Sources */,
 				0CF1A54B1F07363A00C842C9 /* Music.swift in Sources */,
 				0C39A7DB1F203DAE00D1015E /* SongsTableCell.swift in Sources */,
+				0CEF3D881F2388DF00D6C236 /* SidePlayerView.swift in Sources */,
 				0CF1BF301F1ECF3D00D31E17 /* SongsTableView.swift in Sources */,
 				0CF1BF2E1F1E4EB100D31E17 /* PlayerView.swift in Sources */,
 			);

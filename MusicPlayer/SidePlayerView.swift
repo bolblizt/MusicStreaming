@@ -1,48 +1,40 @@
 //
-//  PlayerView.swift
+//  SidePlayerView.swift
 //  MusicPlayer
 //
-//  Created by Dominic Edwayne Rivera on 19/7/17.
+//  Created by Dominic Edwayne Rivera on 22/7/17.
 //  Copyright © 2017 Dominic Edwayne Rivera. All rights reserved.
 //
 
 import UIKit
 import AVFoundation
 
-protocol PlayerViewDelegate {
-    
-    func UpdateTableView(index:IndexPath, oldIndex:IndexPath)
-    
+protocol SidePlayerDelegate {
+     func UpdateTableView(index:IndexPath, oldIndex:IndexPath)
 }
 
+class SidePlayerView: UIView{
 
-class PlayerView: UIView {
-     @IBOutlet weak var timeSlider: UISlider!
-     @IBOutlet weak var playPauseButton: UIButton!
-    @IBOutlet weak var lapseLabel:UILabel!
-    @IBOutlet weak var durationLabel:UILabel!
-    var delegate:PlayerViewDelegate!
+    
+    @IBOutlet weak var playPauseButtonLandscape: UIButton!
+    @IBOutlet weak var timeSliderLandscape: UISlider!
+    @IBOutlet weak var albumImage:UIImageView!
+    @IBOutlet weak var sideLapseLabel:UILabel!
+    @IBOutlet weak var sideDurationLabel:UILabel!
+    var delegate:SidePlayerDelegate!
+    
     var player:AVPlayer?
     var playerItem:AVPlayerItem?
     var playerLayer:AVPlayerLayer?
     var iscurrentlyPlaying:Bool = false
-
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
-    }
-    */
-    
     
     
     //MARK: Setup MiniPlayer
     
     func SetupMiniPlayer(){
         
-     
-        self.timeSlider?.addTarget(self, action: #selector(PlayerView.playbackSliderValueChanged(_:)), for: .valueChanged)
+        
+        self.timeSliderLandscape?.addTarget(self, action: #selector(SidePlayerView.playbackSliderValueChanged(_:)), for: .valueChanged)
         
     }
     
@@ -51,7 +43,7 @@ class PlayerView: UIView {
         
         
         if self.player != nil{
-             self.player?.pause()
+            self.player?.pause()
             self.player = nil
             self.playerLayer = nil
         }
@@ -60,18 +52,18 @@ class PlayerView: UIView {
         let url = URL(string: (selectedMusic?.previewSongURL)!)
         let playerItem:AVPlayerItem = AVPlayerItem(url: url!)
         self.player = AVPlayer(playerItem: playerItem)
-
+        
         
         self.playerLayer=AVPlayerLayer(player: player!)
         self.playerLayer?.frame=CGRect(x: 0, y: 0, width: 10, height: 50)
         self.layer.addSublayer(self.playerLayer!)
-        self.playPauseButton!.setImage( UIImage(named:"PauseButton"), for: UIControlState.normal)
-         self.playPauseButton.addTarget(self, action: #selector(PlayerView.playButtonTapped(_:)), for: .touchUpInside)
+        self.playPauseButtonLandscape!.setImage( UIImage(named:"PauseButton"), for: UIControlState.normal)
+        self.playPauseButtonLandscape.addTarget(self, action: #selector(SidePlayerView.playButtonTapped(_:)), for: .touchUpInside)
         self.player?.play()
         self.iscurrentlyPlaying = true
-       // self.playButtonTapped()
+        // self.playButtonTapped()
         
-      
+        
         let duration : CMTime = playerItem.asset.duration
         let seconds : Float64 = CMTimeGetSeconds(duration)
         
@@ -79,12 +71,12 @@ class PlayerView: UIView {
         let myMins = Int(seconds / 60)
         
         let myTimes = String(myMins) + ":" + String(mySecs);
-        self.durationLabel.text = myTimes;
+        self.sideDurationLabel.text = myTimes;
         
         
-        self.timeSlider!.maximumValue = Float(seconds)
-        self.timeSlider!.isContinuous = false
-        self.timeSlider!.tintColor = UIColor.green
+        self.timeSliderLandscape!.maximumValue = Float(seconds)
+        self.timeSliderLandscape!.isContinuous = false
+        self.timeSliderLandscape!.tintColor = UIColor.green
         
         
         //subroutine used to keep track of current location of time in audio file
@@ -94,21 +86,21 @@ class PlayerView: UIView {
                 
                 //comment out if you don't want continous play
                 if ((time == seconds) && (index.row != (playList.songList?.count)! - 1)){
-                     self.contPlay(index: index, playList: playList)
+                    self.contPlay(index: index, playList: playList)
                 }
                 
                 let trackSecs2 = Int(time) % 60
                 let trackMins2 = Int(time / 60)
                 
                 let trackLapse = String(trackMins2) + ":" + String(trackSecs2);
-                self.lapseLabel.text = trackLapse;
-                self.timeSlider!.value = Float ( time );
+                self.sideLapseLabel.text = trackLapse;
+                self.timeSliderLandscape!.value = Float ( time );
             }
-           
+            
         }
     }
     
- //MARK: Player for search items
+    //MARK: Player for search items
     func SetPlayerResult(index:IndexPath, filtered:[Music]){
         
         
@@ -127,8 +119,8 @@ class PlayerView: UIView {
         self.playerLayer=AVPlayerLayer(player: player!)
         self.playerLayer?.frame=CGRect(x: 0, y: 0, width: 10, height: 50)
         self.layer.addSublayer(self.playerLayer!)
-        self.playPauseButton!.setImage( UIImage(named:"PauseButton"), for: UIControlState.normal)
-        self.playPauseButton.addTarget(self, action: #selector(PlayerView.playButtonTapped(_:)), for: .touchUpInside)
+        self.playPauseButtonLandscape!.setImage( UIImage(named:"PauseButton"), for: UIControlState.normal)
+        self.playPauseButtonLandscape.addTarget(self, action: #selector(PlayerView.playButtonTapped(_:)), for: .touchUpInside)
         self.player?.play()
         self.iscurrentlyPlaying = true
         // self.playButtonTapped()
@@ -141,12 +133,12 @@ class PlayerView: UIView {
         let myMins = Int(seconds / 60)
         
         let myTimes = String(myMins) + ":" + String(mySecs);
-        self.durationLabel.text = myTimes;
+        self.sideDurationLabel.text = myTimes;
         
         
-        self.timeSlider!.maximumValue = Float(seconds)
-        self.timeSlider!.isContinuous = false
-        self.timeSlider!.tintColor = UIColor.green
+        self.timeSliderLandscape!.maximumValue = Float(seconds)
+        self.timeSliderLandscape!.isContinuous = false
+        self.timeSliderLandscape!.tintColor = UIColor.green
         
         
         //subroutine used to keep track of current location of time in audio file
@@ -158,16 +150,17 @@ class PlayerView: UIView {
                 let trackMins2 = Int(time / 60)
                 
                 let trackLapse = String(trackMins2) + ":" + String(trackSecs2);
-                self.lapseLabel.text = trackLapse;
-                self.timeSlider!.value = Float ( time );
+                self.sideLapseLabel.text = trackLapse;
+                self.timeSliderLandscape!.value = Float ( time );
             }
             
         }
     }
+
     
     //MARK: Slider value change
     //Function called when sliders is adjusted manually.
- 
+    
     func playbackSliderValueChanged(_ playbackSlider:UISlider)
     {
         
@@ -186,17 +179,17 @@ class PlayerView: UIView {
     //MARK: PlayButton
     func playButtonTapped(_ sender:UIButton)
     {
-       
+        
         if self.player?.rate == 0
         {
             self.player!.play()
-           self.iscurrentlyPlaying = true
-             sender.setImage( UIImage(named:"PauseButton"), for: .normal)
-           // self.playPauseButton!.setImage( UIImage(named:"PauseButton"), for: .normal)
+            self.iscurrentlyPlaying = true
+            sender.setImage( UIImage(named:"PauseButton"), for: .normal)
+            // self.playPauseButton!.setImage( UIImage(named:"PauseButton"), for: .normal)
         } else {
             self.player!.pause()
             sender.setImage(UIImage(named:"PlayButton"), for: .normal)
-           // self.playPauseButton!.setImage(UIImage(named:"PlayButton"), for: .normal)
+            // self.playPauseButton!.setImage(UIImage(named:"PlayButton"), for: .normal)
             self.iscurrentlyPlaying = false
         }
     }
@@ -215,25 +208,5 @@ class PlayerView: UIView {
             self.delegate?.UpdateTableView(index: nextSongIndex, oldIndex:index)
         }
     }
-    
-    
-   /*
-    func playButtonTapped()
-    {
-        
-        if self.player?.rate == 0
-        {
-            self.player!.play()
-            self.iscurrentlyPlaying = true
-           // sender.setImage( UIImage(named:"PauseButton"), for: .normal)
-             self.playPauseButton!.setImage( UIImage(named:"PauseButton"), for: .normal)
-        } else {
-            self.player!.pause()
-          //  sender.setImage(UIImage(named:"PlayButton"), for: .normal)
-             self.playPauseButton!.setImage(UIImage(named:"PlayButton"), for: .normal)
-            self.iscurrentlyPlaying = false
-        }
-    }*/
-    
-    
+
 }
