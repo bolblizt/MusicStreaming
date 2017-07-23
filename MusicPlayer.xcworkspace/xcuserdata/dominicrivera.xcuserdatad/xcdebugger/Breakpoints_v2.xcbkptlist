@@ -246,7 +246,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MusicPlayer/ViewController.swift"
@@ -259,14 +259,14 @@
             landmarkType = "7">
             <Locations>
                <Location
-                  shouldBeEnabled = "Yes"
+                  shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "MusicPlayer.ViewController.filterContentForSearchText (Swift.String) -&gt; ()"
                   moduleName = "MusicPlayer"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/dominicrivera/Documents/iOSProjects/MusicPlayer%20copy/MusicPlayer/ViewController.swift"
-                  timestampString = "522511794.497144"
+                  urlString = "file:///Users/dominicrivera/Documents/iOSProjects/MusicPlayer/MusicPlayer/ViewController.swift"
+                  timestampString = "522514078.021525"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "327"
@@ -274,14 +274,14 @@
                   offsetFromSymbolStart = "833">
                </Location>
                <Location
-                  shouldBeEnabled = "Yes"
+                  shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
                   symbolName = "MusicPlayer.ViewController.(filterContentForSearchText (Swift.String) -&gt; ()).(closure #1)"
                   moduleName = "MusicPlayer"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/dominicrivera/Documents/iOSProjects/MusicPlayer%20copy/MusicPlayer/ViewController.swift"
-                  timestampString = "522511794.498662"
+                  urlString = "file:///Users/dominicrivera/Documents/iOSProjects/MusicPlayer/MusicPlayer/ViewController.swift"
+                  timestampString = "522514078.023027"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "328"
@@ -294,15 +294,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MusicPlayer/SongsTableView.swift"
-            timestampString = "522512553.420514"
+            timestampString = "522512626.496714"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "129"
-            endingLineNumber = "129"
+            startingLineNumber = "117"
+            endingLineNumber = "117"
             landmarkName = "GetTableViewCell(index:tableView:selectedSong:filteredResults:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -314,11 +314,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MusicPlayer/ViewController.swift"
-            timestampString = "522510511.777944"
+            timestampString = "522514032.983757"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "424"
-            endingLineNumber = "424"
+            startingLineNumber = "429"
+            endingLineNumber = "429"
             landmarkName = "searchBarCancelButtonClicked(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -330,11 +330,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MusicPlayer/ViewController.swift"
-            timestampString = "522510511.777944"
+            timestampString = "522514032.983757"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "410"
-            endingLineNumber = "410"
+            startingLineNumber = "415"
+            endingLineNumber = "415"
             landmarkName = "searchBarTextDidBeginEditing(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -342,15 +342,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MusicPlayer/ViewController.swift"
-            timestampString = "522510511.777944"
+            timestampString = "522514032.983757"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "415"
-            endingLineNumber = "415"
+            startingLineNumber = "420"
+            endingLineNumber = "420"
             landmarkName = "searchBar(_:shouldChangeTextIn:replacementText:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -378,11 +378,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MusicPlayer/ViewController.swift"
-            timestampString = "522510511.777944"
+            timestampString = "522514032.983757"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "368"
-            endingLineNumber = "368"
+            startingLineNumber = "373"
+            endingLineNumber = "373"
             landmarkName = "scrollViewDidEndDecelerating(_:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -394,11 +394,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MusicPlayer/ViewController.swift"
-            timestampString = "522510511.777944"
+            timestampString = "522514032.983757"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "375"
-            endingLineNumber = "375"
+            startingLineNumber = "380"
+            endingLineNumber = "380"
             landmarkName = "AddNewRows(tableView:theList:)"
             landmarkType = "7">
             <Locations>
@@ -409,12 +409,12 @@
                   symbolName = "MusicPlayer.ViewController.AddNewRows (tableView : __ObjC.UITableView, theList : Swift.Array&lt;MusicPlayer.Music&gt;) -&gt; ()"
                   moduleName = "MusicPlayer"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/dominicrivera/Documents/iOSProjects/MusicPlayer%20copy/MusicPlayer/ViewController.swift"
-                  timestampString = "522511794.518844"
+                  urlString = "file:///Users/dominicrivera/Documents/iOSProjects/MusicPlayer/MusicPlayer/ViewController.swift"
+                  timestampString = "522514221.539702"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "376"
-                  endingLineNumber = "376"
+                  startingLineNumber = "381"
+                  endingLineNumber = "381"
                   offsetFromSymbolStart = "30">
                </Location>
                <Location
@@ -424,12 +424,12 @@
                   symbolName = "MusicPlayer.ViewController.AddNewRows (tableView : __ObjC.UITableView, theList : Swift.Array&lt;MusicPlayer.Music&gt;) -&gt; ()"
                   moduleName = "MusicPlayer"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/dominicrivera/Documents/iOSProjects/MusicPlayer%20copy/MusicPlayer/ViewController.swift"
-                  timestampString = "522511794.521355"
+                  urlString = "file:///Users/dominicrivera/Documents/iOSProjects/MusicPlayer/MusicPlayer/ViewController.swift"
+                  timestampString = "522514221.541427"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "376"
-                  endingLineNumber = "376"
+                  startingLineNumber = "381"
+                  endingLineNumber = "381"
                   offsetFromSymbolStart = "686">
                </Location>
             </Locations>
@@ -442,11 +442,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MusicPlayer/SongsTableView.swift"
-            timestampString = "522512553.420514"
+            timestampString = "522512626.496714"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "205"
-            endingLineNumber = "205"
+            startingLineNumber = "193"
+            endingLineNumber = "193"
             landmarkName = "SubArray()"
             landmarkType = "7">
          </BreakpointContent>
@@ -474,11 +474,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "MusicPlayer/SongsTableView.swift"
-            timestampString = "522512553.420514"
+            timestampString = "522512626.496714"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "238"
-            endingLineNumber = "238"
+            startingLineNumber = "226"
+            endingLineNumber = "226"
             landmarkName = "AddNewItems(ListOfSongs:)"
             landmarkType = "7">
          </BreakpointContent>

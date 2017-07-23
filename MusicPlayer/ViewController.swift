@@ -346,9 +346,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             self.trackListTable.tableHeaderView?.isHidden = false
             self.trackSearchBar.isHidden = true
             self.isLandscape = false
+            self.miniPlayer.alpha = 0.0
+            if self.isPlaying{
+                self.miniPlayer.alpha = 1.0
+            }
             print("Portrait")
         }
     }
+    
     
     
     func searchAutocompleteEntriesWithSubstring(_ subString: String){
@@ -428,6 +433,10 @@ extension ViewController: UISearchBarDelegate{
         searchBar.resignFirstResponder()
        self.filteredList.removeAll()
         self.trackListTable.reloadData()
+        if self.isLandscape {
+            
+           self.searchController.searchBar.isHidden = true
+        }
         
     }
 }
