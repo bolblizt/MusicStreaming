@@ -18,15 +18,17 @@ class SongsTableView: NSObject {
     }
     */
     
-    var songsRows = 0
+    var currentRows = 0
     var songSections = 1
     var songTableSearchBar:UISearchBar?
     var tableView:UITableView!
     var overLay:UIView?
     var remainingRows:Int = 0
-    var rows:Int = 0
+    var totalRows:Int = 0
       var thePlayList:PlayList?
     var tableCell:SongsTableCell!
+    var lastItem:Int = 0
+    
     
     
     
@@ -42,7 +44,7 @@ class SongsTableView: NSObject {
     
     
     func AddRows()->Int{
-        remainingRows = rows
+        remainingRows = totalRows
         
         return remainingRows
     }
@@ -50,8 +52,7 @@ class SongsTableView: NSObject {
     //MARK: Get Selected Song
     func GetSong(index:IndexPath)->Music{
         
-        let musicData = self.thePlayList?.songList?.object(at: index.row) as? Music
-        
+        let musicData = self.thePlayList?.musicList?[index.row]
         return musicData!
     }
 
@@ -62,8 +63,8 @@ class SongsTableView: NSObject {
     func SetPlayList(songList:PlayList){
         
         self.thePlayList = songList
-        let rowsCount:Int = (self.thePlayList?.songList?.count)!
-        self.SetRows(rows: rowsCount)
+      //  let rowsCount:Int = (self.thePlayList?.musicList?.count)!
+        self.totalRows = (self.thePlayList?.GetFullList().count)!
         self.SetSection(section: 1)
         
         
@@ -71,11 +72,15 @@ class SongsTableView: NSObject {
     
     //MARK: Number of rows
     func GetRows()->Int{
-        return songsRows
+        if currentRows == 0{
+            currentRows = 25
+        }
+        
+        return currentRows
     }
     
     func SetRows(rows:Int){
-        self.songsRows = rows
+        self.totalRows = rows
     }
     
     
@@ -95,7 +100,7 @@ class SongsTableView: NSObject {
     func GetTableViewCell(index:IndexPath, tableView:UITableView, selectedSong:Bool)->UITableViewCell{
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "SongCell", for: index) as! SongsTableCell
-        let musicData = self.thePlayList?.songList?.object(at: index.row) as? Music
+        let musicData = self.thePlayList?.arrayList?.object(at:index.row) as? Music
         cell.setMusicData(theMusic: musicData!)
         cell.SetLabel()
         
@@ -151,8 +156,7 @@ class SongsTableView: NSObject {
             self.overLay?.addSubview(blurEffectView)
             self.overLay!.alpha = 0.8
             self.overLay!.addSubview(indicator)
-            //self.view.addSubview(self.overLay!)
-            //self.view.bringSubview(toFront: self.overLay!)
+           
         }
         
         
@@ -163,8 +167,7 @@ class SongsTableView: NSObject {
     
     func GetSongName(indexPath:IndexPath)-> String{
         
-        let songName = self.thePlayList?.songList?.object(at: indexPath.row) as? Music
-        
+        let songName = self.thePlayList?.arrayList?.object(at: indexPath.row) as? Music
         guard let name = songName?.trackName else {
             
             return ""
@@ -176,8 +179,7 @@ class SongsTableView: NSObject {
 
     func GetAlbumName(indexPath:IndexPath)-> String{
         
-        let songName = self.thePlayList?.songList?.object(at: indexPath.row) as? Music
-        
+        let songName = self.thePlayList?.arrayList?.object(at: indexPath.row) as? Music
         guard let name = songName?.albumName else {
             
             return ""
@@ -187,8 +189,55 @@ class SongsTableView: NSObject {
         return name
     }
     
+    //MAR: Adding new rows methods
+    func SubArray() -> [Music]{
+        var tempArray:[Music]?
+        var tempTotal = 0
+        var len = 0
+        
+        if self.currentRows < self.totalRows{
+            if self.currentRows == 0{
+                len = 25
+            }
+            else{
+                len = 5
+            }
+            
+            tempArray = self.thePlayList?.GetFullList().subarray(with: NSMakeRange(currentRows, len)) as! [Music]?
+            self.lastItem = currentRows
+            self.currentRows += len
+        }
+        else
+        {
+            tempTotal =  self.totalRows - self.currentRows
+            len = tempTotal
+            tempArray = self.thePlayList?.GetFullList().subarray(with: NSMakeRange(self.currentRows, len)) as! [Music]?
+            self.lastItem = self.currentRows
+            self.currentRows += len
+            
+        }
+        
+        
+        return tempArray!
+    }
+    
+    func AddNewItems(ListOfSongs:[Music]){
+        
+        if self.thePlayList?.arrayList == nil{
+            self.thePlayList?.arrayList = NSMutableArray()
+        }
+       
+        self.thePlayList?.arrayList?.addObjects(from: ListOfSongs)
+        
+        
+    }
     
     
-    
+    func ProcessArray()->[Music]{
+        let myList = SubArray()
+        AddNewItems(ListOfSongs: myList)
+        
+        return myList
+    }
 
 }

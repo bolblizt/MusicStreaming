@@ -60,20 +60,39 @@ struct Music{
 //PlayList
 struct  PlayList {
     
-    var songList:NSArray?
-   private var musicList:[Music]?
+   private  var songList:NSArray?
+    var musicList:[Music]?
+    var arrayList:NSMutableArray?
+   private var currentTotalRow:Int = 0
     
     init( list:[Music] ) {
         self.songList = NSArray(array: list)
         self.musicList = list
+    
+        
+        
     }
     
-    init() {
-        
+    func GetFullList()->NSArray{
+        return self.songList!
     }
     
     func GetMusicList()->[Music]{
      return self.musicList!
+    }
+    
+    mutating func SetCurrentRows(rowsTotal:Int){
+        self.currentTotalRow = rowsTotal
+    }
+    
+    func GetCurrentRows()->Int{
+       return self.currentTotalRow
+    }
+    
+    func AddNewItems(trackList:[Music]){
+        
+       
+        
     }
     
 }
@@ -109,8 +128,8 @@ class MusicDownloader:NSObject{
             guard response.result.isSuccess else {
                 print("Error while fetching tags: \(String(describing: response.result.error))")
                 //POST
-                //let nc = NotificationCenter.default
-                // nc.post(name: Notification.Name(rawValue: "errorFetching"), object: nil)
+                let nc = NotificationCenter.default
+                 nc.post(name: Notification.Name(rawValue: "errorFetching"), object: nil)
                 return
             }
             

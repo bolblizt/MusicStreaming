@@ -12,46 +12,25 @@ import StoreKit
 import Alamofire
 
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, PlayerViewDelegate, SidePlayerDelegate,UISearchControllerDelegate {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, PlayerViewDelegate,UISearchControllerDelegate, UIScrollViewDelegate {
 
-   
-    
-    
-    @IBOutlet weak var songTableView:UITableView!
+    @IBOutlet weak var trackListTable:UITableView!
     @IBOutlet weak var miniPlayer:PlayerView!
-    @IBOutlet weak var sidePlayer:SidePlayerView!
     var viewOverlay: UIView!
     var songsTableView:SongsTableView!
     var musicDownLoad:MusicDownloader!
     var selected:Bool = false
     var isLandscape:Bool = false
     var selectedIndex:IndexPath?
+    var oldIndexPath:IndexPath?
     var musicPlayed:Music?
+    var isPlaying:Bool = false
     
     /// Search controller to help us with filtering.
     var searchController: UISearchController!
     var filteredList:[Music]! = []
+    var trackSearchBar:UISearchBar!
     
-    
-    
-    //MARK: Setup SearchController
-    func CreateSearch(){
-        
-        self.searchController = UISearchController(searchResultsController: nil)
-        self.searchController.searchResultsUpdater = self
-        self.searchController.searchBar.sizeToFit()
-        self.songTableView.tableHeaderView = self.searchController.searchBar
-        self.searchController.delegate = self
-        self.searchController.dimsBackgroundDuringPresentation = false
-        self.searchController.searchBar.delegate = self
-        definesPresentationContext = true
-        
-        let trackSearchBar = UISearchBar(frame: CGRect(x: 10, y: 65, width: self.sidePlayer.frame.width-20, height: 32))
-        trackSearchBar.showsCancelButton = false
-        trackSearchBar.delegate = self
-        self.sidePlayer.addSubview(trackSearchBar)
-
-    }
     
     
     
@@ -60,7 +39,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         // Do any additional setup after loading the view, typically from a nib.
        // NotificationCenter.default.addObserver(self, selector: #selector(ViewController.CreateSearch), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
     
-       
+       self.title = "Music Player"
         self.CreateSearch()
         self.PrepOperation()
 
@@ -108,7 +87,10 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         if (indexPath.row < rows) {
             print("dismiss")
-            self.Overlay(start: false)
+            DispatchQueue.main.async {
+                self.Overlay(start: false)
+            }
+            
         }
         let cell:UITableViewCell!
         self.selected = false
@@ -123,7 +105,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         else
         {
-             let itemSong = self.songsTableView.thePlayList?.songList?.object(at: indexPath.row) as? Music
+             let itemSong = self.songsTableView.thePlayList?.arrayList?.object(at: indexPath.row)as? Music 
             if let trackSong =  self.musicPlayed?.trackName{
                 if trackSong == itemSong?.trackName{
                     self.selected = true
@@ -147,35 +129,24 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     
     //select
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        ///Music Player
-        self.LaunchPlayer(index: indexPath)
-       
-        if let songIndex = self.selectedIndex{
-            self.selectedIndex = indexPath
-            self.songTableView.reloadRows(at: [indexPath,songIndex], with: .fade)
-            
-            
+        tableView.selectRow(at: indexPath, animated: true, scrollPosition: .none)
+        self.miniPlayer.alpha = 1.0
+        if let oldIndex = self.selectedIndex{
+            self.oldIndexPath = oldIndex
         }
-        else{
-             self.selectedIndex = indexPath
-             self.songTableView.reloadRows(at: [indexPath], with: .fade)
-        }
+       self.selectedIndex = indexPath
         
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-      //  if indexPath.row == airportViewModel?.tempoList?.count{
-            
-        //}
         
     }
 
     //MARk: - Play selected track
     func LaunchPlayer(index:IndexPath){
-        self.miniPlayer.alpha = 1.0
+        
         if self.filteredList.count > 0 {
             
             self.miniPlayer.SetPlayerResult(index: index, filtered: self.filteredList)
@@ -194,47 +165,107 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         self.musicDownLoad = MusicDownloader(urlString: "https://itunes.apple.com/search?term=beatles&entity=song&limit=50")
         self.musicDownLoad.downloadMusic()
-
         self.songsTableView = SongsTableView()
         
-        
         DispatchQueue.main.async {
-           //self.viewOverlay =  self.songsTableView.AddOverLay(view: self.view)
-           // self.view.addSubview(self.viewOverlay)
-            //self.view.bringSubview(toFront: self.viewOverlay)
-            //self.Overlay(start: true)
-            self.miniPlayer.alpha = 0.0
-            self.miniPlayer.SetupMiniPlayer()
-            self.miniPlayer.delegate = self
-            self.sidePlayer.delegate = self
-            
+           self.viewOverlay =  self.songsTableView.AddOverLay(view: self.view)
+            self.view.addSubview(self.viewOverlay)
+            self.view.bringSubview(toFront: self.viewOverlay)
+            self.Overlay(start: true)
         }
         
+        DispatchQueue.global(qos: .default).async {
+            self.miniPlayer.SetupMiniPlayer()
+            self.miniPlayer.delegate = self
+        }
         
-        //
+        //Register Notifications
         NotificationCenter.default.addObserver(self, selector: #selector(ViewController.setTheTable), name: NSNotification.Name(rawValue: "listOfSongs"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(ViewController.AlertMsg), name: NSNotification.Name(rawValue: "errorFetching"), object: nil)
         
-      //  _ =  self.setupData(dataLoader: dataLoader!)
+    }
+    
+    
+    //MARK: Setup SearchController
+    func CreateSearch(){
+        
+        self.searchController = UISearchController(searchResultsController: nil)
+        self.searchController.searchResultsUpdater = self
+        self.searchController.searchBar.sizeToFit()
+        self.trackListTable.tableHeaderView = self.searchController.searchBar
+        self.searchController.delegate = self
+        self.searchController.dimsBackgroundDuringPresentation = false
+        self.searchController.searchBar.delegate = self
+        definesPresentationContext = true
+        
+        self.trackSearchBar = UISearchBar(frame: CGRect(x: 0, y: 65, width: self.miniPlayer.bounds.width , height: 32))
+        self.trackSearchBar.autoresizingMask = [.flexibleWidth]
+        self.trackSearchBar.showsCancelButton = false
+        self.trackSearchBar.delegate = self
+        self.miniPlayer.addSubview(trackSearchBar)
+        self.trackSearchBar.isHidden = true
+        if UIDevice.current.orientation.isLandscape {
+            print("Landscape")
+            self.isLandscape = true
+            self.miniPlayer.alpha = 1.0
+            self.trackSearchBar.isHidden = false
+            self.trackListTable.tableHeaderView?.isHidden = true
+        }
+        
+    }
+    
+    //MARK: Play Track
+    @IBAction func PlaySong(_ sender:UIButton){
+        
+        if !self.isPlaying {
+            
+            self.isPlaying = true
+            self.LaunchPlayer(index: self.selectedIndex!)
+            
+            var listOfSongs:[Music] = (self.songsTableView.thePlayList?.GetMusicList())!
+            if self.filteredList.count > 0{
+                listOfSongs = self.filteredList
+            }
+            
+            self.miniPlayer.LoadImage(songIndex: self.selectedIndex!, listSong: listOfSongs)
+            
+            if let songIndex = self.oldIndexPath{
+                self.trackListTable.reloadRows(at: [self.selectedIndex!,songIndex], with: .fade)
+            }
+            else{
+                
+                self.trackListTable.reloadRows(at: [self.selectedIndex!], with: .fade)
+            }
+            
+        }
+        else
+        {
+            if let songIndex = self.oldIndexPath{
+                self.trackListTable.reloadRows(at: [songIndex], with: .fade)
+            }
+            self.miniPlayer.playButtonTapped()
+            self.isPlaying = false
+        }
         
         
         
     }
+
     
     //MARK: - Setup the table view
     func setTheTable(){
         
         self.songsTableView.SetPlayList(songList:self.musicDownLoad.GetPlayList())
-        self.songTableView?.delegate = self
-        self.songTableView?.dataSource = self
+    _ = self.songsTableView.ProcessArray()
+        self.trackListTable?.delegate = self
+        self.trackListTable?.dataSource = self
         DispatchQueue.main.async {
-            self.songTableView?.reloadData()
+            self.trackListTable?.reloadData()
         }
         
     }
 
-    
     
     //MARK: - Overlay View when data is fetch
     func Overlay(start:Bool){
@@ -253,7 +284,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         {
             UIView.animate(withDuration: 2.5, delay: 0.0, options: UIViewAnimationOptions(), animations: { () -> Void in
                 
-             //   self.viewOverlay!.alpha = 0.0
+               self.viewOverlay!.alpha = 0.0
                 
             }, completion: { (finished: Bool) -> Void in
                 
@@ -265,7 +296,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
 
     //MARK: - Alert Messages
     func AlertMsg(){
-        
+        self.miniPlayer.alpha = 0.0
         let alertView = UIAlertController(title: "Music Player", message: "Please check your internet connection", preferredStyle: .alert)
         
         let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) {
@@ -282,7 +313,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //MARK:PlayerView Delegate
     func UpdateTableView(index:IndexPath, oldIndex:IndexPath){
         self.selectedIndex = index
-        self.songTableView.reloadRows(at: [oldIndex,index], with: .fade)
+        self.trackListTable.reloadRows(at: [oldIndex,index], with: .fade)
         
     }
     
@@ -290,13 +321,15 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     //MARK: Filtered Content
     func filterContentForSearchText(_ searchText: String) {
-        let musicList:[Music] = (self.songsTableView.thePlayList?.GetMusicList())!
+        let musicList:[Music] = self.songsTableView.thePlayList?.arrayList! as! [Music]
+    
+        
         self.filteredList =  musicList.filter {  item in
             return  item.trackName.lowercased().contains(searchText.lowercased()) || (item.artist?.lowercased().contains(searchText.lowercased()))!
         }
         
         
-        self.songTableView.reloadData()
+        self.trackListTable.reloadData()
     }
 
     //MARK: Orientation Changes
@@ -304,15 +337,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         if UIDevice.current.orientation.isLandscape {
             print("Landscape")
             
-            self.songTableView.tableHeaderView?.isHidden = true
-            //self.searchController = nil
-           // self.CreateSearch()
+            self.trackListTable.tableHeaderView?.isHidden = true
             self.isLandscape = true
+            self.trackSearchBar.isHidden = false
+            self.miniPlayer.alpha = 1.0
         } else {
             
-            self.songTableView.tableHeaderView?.isHidden = false
-            //self.searchController = nil
-            //self.CreateSearch()
+            self.trackListTable.tableHeaderView?.isHidden = false
+            self.trackSearchBar.isHidden = true
             self.isLandscape = false
             print("Portrait")
         }
@@ -326,10 +358,41 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     
+    //MARK: - Scroll Delegates
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+         let newList =  self.songsTableView?.ProcessArray()
+         AddNewRows(tableView: self.trackListTable!, theList: newList!)
+        
+    }
+
+    //MARK: - Add New Rows
+    func AddNewRows(tableView:UITableView, theList:[Music]){
+        
+        var i:Int = (self.songsTableView?.lastItem)!
+        var indexs:[IndexPath] = [IndexPath]()
+        while i < (self.songsTableView?.currentRows)!{
+            let newIndex = IndexPath(row: i, section: 0)
+            indexs.append(newIndex)
+            i += 1
+        }
+        
+        tableView.beginUpdates()
+        tableView.insertRows(at: indexs, with: .none )
+        tableView.endUpdates()
+ 
+    }
+
+    
 
 }
 
 
+//MARK: SearchController
 extension ViewController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
        
@@ -349,12 +412,6 @@ extension ViewController: UISearchBarDelegate{
        
     }
     
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        
-      
-        
-    }
-    
     func searchBar(_ searchBar: UISearchBar, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         var txtAfterUpdate:NSString = searchBar.text! as NSString
         txtAfterUpdate = txtAfterUpdate.replacingCharacters(in: range, with: text) as NSString
@@ -370,7 +427,7 @@ extension ViewController: UISearchBarDelegate{
         searchBar.text = nil
         searchBar.resignFirstResponder()
        self.filteredList.removeAll()
-        self.songTableView.reloadData()
+        self.trackListTable.reloadData()
         
     }
 }
