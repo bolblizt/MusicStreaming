@@ -48,7 +48,7 @@ class PlayerView: UIView {
         
     }
     
-    //setup avplayer avPlayerItem --> objects used to play audio files
+    //MARK: objects used to play audio files
     func SetPlayer(index:IndexPath, playList:PlayList){
         
         
@@ -128,7 +128,7 @@ class PlayerView: UIView {
        
     }
     
- //MARK: Player for search items
+ //MARK: Player for search items only
     func SetPlayerResult(index:IndexPath, filtered:[Music]){
         
         
@@ -151,7 +151,6 @@ class PlayerView: UIView {
         self.playButtonTapped()
         self.player?.play()
         self.iscurrentlyPlaying = true
-        // self.playButtonTapped()
         
         
         let duration : CMTime = playerItem.asset.duration
@@ -202,7 +201,7 @@ class PlayerView: UIView {
         }
     }
     
-    //MARK: Load Image on side player
+    //MARK: Load the Image on side player
     func LoadImage(songIndex:IndexPath, listSong:[Music]){
         
         var selectedTrack:Music?
@@ -224,7 +223,7 @@ class PlayerView: UIView {
     }
 
     
-    //MARK: PlayButton
+    //MARK: Stream and update the play button
     func playButtonTapped()
     {
        
@@ -233,16 +232,16 @@ class PlayerView: UIView {
             self.player!.play()
            self.iscurrentlyPlaying = true
              self.playPauseButton.setImage( UIImage(named:"PauseButton"), for: .normal)
-           // self.playPauseButton!.setImage( UIImage(named:"PauseButton"), for: .normal)
+           
         } else {
             self.player!.pause()
             self.playPauseButton.setImage(UIImage(named:"PlayButton"), for: .normal)
-           // self.playPauseButton!.setImage(UIImage(named:"PlayButton"), for: .normal)
             self.iscurrentlyPlaying = false
         }
     }
     
     
+    //MARK: Continous music stream
     func contPlay(index:IndexPath, playList:PlayList){
         
         if(index.row < (playList.musicList?.count)! - 1){
@@ -258,24 +257,6 @@ class PlayerView: UIView {
         }
     }
     
-    
-   /*
-    func playButtonTapped()
-    {
-        
-        if self.player?.rate == 0
-        {
-            self.player!.play()
-            self.iscurrentlyPlaying = true
-           // sender.setImage( UIImage(named:"PauseButton"), for: .normal)
-             self.playPauseButton!.setImage( UIImage(named:"PauseButton"), for: .normal)
-        } else {
-            self.player!.pause()
-          //  sender.setImage(UIImage(named:"PlayButton"), for: .normal)
-             self.playPauseButton!.setImage(UIImage(named:"PlayButton"), for: .normal)
-            self.iscurrentlyPlaying = false
-        }
-    }*/
     
     
 }

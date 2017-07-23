@@ -203,13 +203,4 @@ class MusicDownloader:NSObject{
     }
     
     
-    func download(){
-        
-   
-        
-    }
-    
-    
-    
-    
 }

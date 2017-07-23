@@ -331,11 +331,17 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         self.trackListTable.reloadData()
     }
+    
+    func searchAutocompleteEntriesWithSubstring(_ subString: String){
+        
+        self.filterContentForSearchText(subString)
+        
+    }
 
     //MARK: Orientation Changes
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         if UIDevice.current.orientation.isLandscape {
-            print("Landscape")
+           // print("Landscape")
             
             self.trackListTable.tableHeaderView?.isHidden = true
             self.isLandscape = true
@@ -350,17 +356,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             if self.isPlaying{
                 self.miniPlayer.alpha = 1.0
             }
-            print("Portrait")
+           // print("Portrait")
         }
     }
     
     
-    
-    func searchAutocompleteEntriesWithSubstring(_ subString: String){
-        
-        self.filterContentForSearchText(subString)
-        
-    }
     
     
     //MARK: - Scroll Delegates

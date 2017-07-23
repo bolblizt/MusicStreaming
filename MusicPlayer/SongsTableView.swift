@@ -189,7 +189,7 @@ class SongsTableView: NSObject {
         return name
     }
     
-    //MAR: Adding new rows methods
+    //MARK: Adding new rows methods
     func SubArray() -> [Music]{
         var tempArray:[Music]?
         var tempTotal = 0
